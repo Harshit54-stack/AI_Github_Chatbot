@@ -1,0 +1,26 @@
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+python-dotenv==1.0.1
+google-generativeai==0.8.3
+pydantic>=2.12.5,<3.0.0
+httpx>=0.28.1,<1.0.0
+gitpython==3.1.44
+# Phase 3 — Tree-sitter parsing
+tree-sitter>=0.24.0
+tree-sitter-python
+tree-sitter-javascript
+tree-sitter-typescript
+tree-sitter-java
+tree-sitter-cpp
+tree-sitter-c
+tree-sitter-go
+tree-sitter-rust
+# Phase 5 — Embedding generation
+numpy>=1.26.0
+sentence-transformers>=2.7.0
+# Phase 6 — FAISS vector database
+faiss-cpu>=1.7.4
+# Phase 7 — RAG pipeline & streaming
+sse-starlette>=1.6.1,<2.0.0
+# Phase 9 — Hybrid BM25+FAISS retrieval
+rank-bm25==0.2.2

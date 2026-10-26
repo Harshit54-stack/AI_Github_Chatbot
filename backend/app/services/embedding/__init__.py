@@ -1,0 +1,3 @@
+"""
+Embedding sub-package init.
+"""
