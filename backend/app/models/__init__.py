@@ -17,8 +17,11 @@ from .parsed_file import (
     FilesListResponse,
     RepositorySummary,
 )
+from .user import User
 
 __all__ = [
+    # auth
+    "User",
     # chat
     "ChatRequest",
     "ChatResponse",

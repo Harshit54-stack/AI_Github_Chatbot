@@ -8,13 +8,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import settings
-from app.api import router, repository_router, parser_router, chunk_router, embeddings_router, vector_router, chat_router
+from app.api import router, repository_router, parser_router, chunk_router, embeddings_router, vector_router, chat_router, auth_router
+from app.db import create_all_tables
 
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
     description="Backend API for the AI GitHub Repository Assistant",
 )
+
+
+@app.on_event("startup")
+def on_startup():
+    """Create database tables on startup if they do not exist."""
+    create_all_tables()
+
 
 # ---------------------------------------------------------------------------
 # CORS
@@ -37,6 +45,7 @@ app.include_router(chunk_router)
 app.include_router(embeddings_router)
 app.include_router(vector_router)
 app.include_router(chat_router)
+app.include_router(auth_router)
 
 # ---------------------------------------------------------------------------
 # Global exception handlers

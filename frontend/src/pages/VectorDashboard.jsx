@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import ErrorNotification from "../components/ErrorNotification";
 import { useVectorStore } from "../hooks/useVectorStore";
+import { useChat, isValidRepoMeta } from "../context/ChatContext";
 
 // ── Constants & helpers ──────────────────────────────────────────────────────
 
@@ -33,14 +34,14 @@ function fmt(n) { return typeof n === "number" ? n.toLocaleString() : "—"; }
 
 function StatCard({ icon, label, value, accent = "text-cyan-400", sub }) {
   return (
-    <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-4 flex items-start gap-3">
-      <div className="w-9 h-9 rounded-xl bg-white/[0.06] flex items-center justify-center text-lg shrink-0">
+    <div className="bg-[#14151D] border border-white/[0.08] hover:border-white/20 rounded-2xl p-4 flex items-start gap-3.5 shadow-md transition-colors">
+      <div className="icon-disc !w-9 !h-9 text-base text-slate-300">
         {icon}
       </div>
       <div className="min-w-0">
-        <p className={`text-xl font-bold tabular-nums truncate ${accent}`}>{value ?? "—"}</p>
-        <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">{label}</p>
-        {sub && <p className="text-[10px] text-slate-600 mt-0.5">{sub}</p>}
+        <p className={`text-xl font-bold tabular-nums font-mono truncate ${accent}`}>{value ?? "—"}</p>
+        <p className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-medium">{label}</p>
+        {sub && <p className="text-[10px] text-slate-500 mt-0.5 font-mono">{sub}</p>}
       </div>
     </div>
   );
@@ -88,16 +89,12 @@ function ScoreBar({ score }) {
 
 function FaissStatusCard({ statistics, isReady }) {
   return (
-    <div className={`rounded-2xl border p-5 flex items-start gap-4 ${
+    <div className={`p-5 flex items-start gap-4 ${
       isReady
-        ? "bg-gradient-to-br from-cyan-500/10 to-teal-500/10 border-cyan-500/20"
-        : "bg-white/[0.03] border-white/10"
+        ? "glow-card glow-card-cyan"
+        : "bg-[#14151D] border border-white/[0.08] rounded-2xl"
     }`}>
-      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-2xl ${
-        isReady
-          ? "bg-gradient-to-br from-cyan-500 to-teal-600 shadow-lg shadow-cyan-500/30"
-          : "bg-white/5"
-      }`}>
+      <div className="icon-disc !w-12 !h-12 text-2xl text-cyan-400">
         🗄️
       </div>
       <div className="min-w-0 flex-1">
@@ -114,19 +111,19 @@ function FaissStatusCard({ statistics, isReady }) {
         {statistics ? (
           <div className="space-y-1">
             <p className="text-xs text-cyan-300 font-mono">{statistics.index_type}</p>
-            <div className="flex flex-wrap gap-3 text-[10px] text-slate-500 mt-2">
-              <span>Vectors: <span className="text-slate-300">{fmt(statistics.total_vectors)}</span></span>
-              <span>Dim: <span className="text-slate-300">{statistics.embedding_dimension}</span></span>
-              <span>Size: <span className="text-slate-300">{(statistics.index_size_bytes / 1024).toFixed(1)} KB</span></span>
+            <div className="flex flex-wrap gap-3 text-[10px] text-slate-400 mt-2 font-mono">
+              <span>Vectors: <span className="text-slate-200 font-bold">{fmt(statistics.total_vectors)}</span></span>
+              <span>Dim: <span className="text-slate-200 font-bold">{statistics.embedding_dimension}</span></span>
+              <span>Size: <span className="text-slate-200 font-bold">{(statistics.index_size_bytes / 1024).toFixed(1)} KB</span></span>
             </div>
             {statistics.last_updated && (
-              <p className="text-[10px] text-slate-600">
+              <p className="text-[10px] text-slate-500">
                 Updated: {new Date(statistics.last_updated).toLocaleString()}
               </p>
             )}
           </div>
         ) : (
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Build the index from Phase 5 embeddings to enable semantic search.
           </p>
         )}
@@ -196,14 +193,14 @@ function SearchPanel({ repoName, isSearching, searchResults, searchError, onSear
   };
 
   return (
-    <div className="bg-white/[0.04] border border-white/10 rounded-2xl overflow-hidden">
+    <div className="bg-[#14151D] border border-white/[0.08] rounded-2xl overflow-hidden shadow-xl">
       {/* Header */}
       <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-base">🔍</span>
           <h3 className="text-sm font-semibold text-white">Semantic Search Tester</h3>
           <span className="text-[9px] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded-full px-2 py-0.5">
-            No AI · Pure Vector
+            Pure Vector
           </span>
         </div>
         {searchResults && (
@@ -224,7 +221,7 @@ function SearchPanel({ repoName, isSearching, searchResults, searchError, onSear
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="e.g. JWT authentication handler, database connection pool…"
-              className="w-full pl-9 pr-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 transition-colors"
+              className="w-full pl-9 pr-3 py-2.5 bg-[#191A23] border border-white/[0.08] rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 transition-colors"
             />
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
@@ -233,7 +230,7 @@ function SearchPanel({ repoName, isSearching, searchResults, searchError, onSear
               id="vector-topk-select"
               value={topK}
               onChange={(e) => setTopK(Number(e.target.value))}
-              className="text-xs bg-white/5 border border-white/10 text-slate-300 rounded-xl px-2 py-2.5 focus:outline-none focus:border-cyan-500/50 cursor-pointer"
+              className="text-xs bg-[#191A23] border border-white/[0.08] text-slate-300 rounded-xl px-2 py-2.5 focus:outline-none focus:border-cyan-500/50 cursor-pointer"
             >
               {[3, 5, 10, 15, 20].map((k) => (
                 <option key={k} value={k}>{k}</option>
@@ -298,7 +295,12 @@ function SearchPanel({ repoName, isSearching, searchResults, searchError, onSear
 export default function VectorDashboard() {
   const location = useLocation();
   const navigate = useNavigate();
-  const repoMeta = location.state?.repoMeta ?? null;
+  const { repoMeta: contextRepoMeta } = useChat();
+  const repoMeta = isValidRepoMeta(location.state?.repoMeta)
+    ? location.state.repoMeta
+    : isValidRepoMeta(contextRepoMeta)
+    ? contextRepoMeta
+    : null;
 
   const {
     statistics,
@@ -332,7 +334,7 @@ export default function VectorDashboard() {
       <div className="flex flex-col h-screen overflow-hidden">
 
         {/* ── Header ──────────────────────────────────────────────── */}
-        <header className="flex items-center gap-4 px-5 py-3.5 border-b border-white/10 bg-white/[0.02] backdrop-blur-md shrink-0">
+        <header className="flex items-center gap-4 px-5 py-3.5 border-b border-white/[0.08] bg-white/[0.02] backdrop-blur-md shrink-0">
           <button
             onClick={() => navigate(repoMeta ? "/embeddings" : "/", { state: { repoMeta } })}
             className="text-slate-400 hover:text-white transition-colors"
@@ -344,7 +346,7 @@ export default function VectorDashboard() {
           </button>
 
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center shrink-0 shadow-lg shadow-cyan-500/30 text-sm">
+            <div className="w-7 h-7 rounded-lg bg-cyan-600 flex items-center justify-center shrink-0 shadow-md shadow-cyan-600/30 text-sm">
               🗄️
             </div>
             <div className="min-w-0">
@@ -374,17 +376,13 @@ export default function VectorDashboard() {
               ))}
             </div>
           )}
-
-          <span className="hidden sm:block text-[9px] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded-full px-2.5 py-1 font-semibold uppercase tracking-widest shrink-0">
-            Phase 6
-          </span>
         </header>
 
         {/* ── Body ────────────────────────────────────────────────── */}
         {!repoMeta ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 px-8 text-center select-none">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-teal-600/10 border border-cyan-500/10 flex items-center justify-center">
-              <span className="text-3xl">🗄️</span>
+            <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/10 flex items-center justify-center">
+              <span className="text-2xl">🗄️</span>
             </div>
             <div>
               <p className="text-slate-300 font-medium">No Repository Loaded</p>
@@ -408,8 +406,8 @@ export default function VectorDashboard() {
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center shrink-0">
-                        <span className="text-[10px] text-white font-bold">P6</span>
+                      <div className="w-6 h-6 rounded-lg bg-cyan-600/80 flex items-center justify-center shrink-0 text-xs">
+                        🗄️
                       </div>
                       <h2 className="text-sm font-semibold text-white">FAISS Index Builder</h2>
                       {isIndexReady && (
@@ -492,8 +490,8 @@ export default function VectorDashboard() {
               {/* ── Empty state ───────────────────────────── */}
               {!isIndexReady && !isBuilding && (
                 <div className="flex flex-col items-center justify-center py-12 gap-4 text-center select-none">
-                  <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/10 to-teal-600/10 border border-cyan-500/10 flex items-center justify-center">
-                    <span className="text-4xl">🗄️</span>
+                  <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/10 flex items-center justify-center">
+                    <span className="text-3xl">🗄️</span>
                   </div>
                   <div>
                     <p className="text-slate-300 font-semibold">Vector Index Not Built</p>
@@ -502,7 +500,7 @@ export default function VectorDashboard() {
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center mt-2">
-                    {["✓ Clone (P2)", "✓ Parse (P3)", "✓ Chunk (P4)", "✓ Embed (P5)", "→ FAISS (P6)"].map((step) => (
+                    {["✓ Clone", "✓ Parse", "✓ Chunk", "✓ Embed", "→ FAISS"].map((step) => (
                       <span key={step} className="text-[11px] border border-white/10 rounded-full px-3 py-1 text-slate-500">
                         {step}
                       </span>

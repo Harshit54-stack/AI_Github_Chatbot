@@ -110,6 +110,47 @@ async def clone_repo(payload: CloneRequest):
     )
 
 
+@repository_router.get("/active", response_model=RepositoryMeta)
+def get_active_repo():
+    """
+    Return metadata for the currently active cloned repository.
+
+    Raises 404 if no repository is currently cloned.
+    """
+    clone_dir = _get_active_clone_or_404()
+
+    folder_name = clone_dir.name
+    parts = folder_name.split("__", 1)
+    owner = parts[0] if len(parts) >= 1 else "unknown"
+    repo_name = parts[1] if len(parts) == 2 else folder_name
+
+    branch = "main"
+    try:
+        import git
+        repo = git.Repo(clone_dir)
+        try:
+            branch = repo.active_branch.name
+        except TypeError:
+            branch = "HEAD"
+    except Exception:
+        pass
+
+    result = scan_repository(clone_dir, owner, repo_name, branch=branch)
+
+    return RepositoryMeta(
+        status="success",
+        message=f"Active repository '{owner}/{repo_name}' retrieved successfully.",
+        repository_name=result.repository_name,
+        owner=result.owner,
+        branch=result.branch,
+        total_files=result.total_files,
+        supported_files=result.supported_files,
+        ignored_files=result.ignored_files,
+        folder_count=result.folder_count,
+        languages=result.languages,
+    )
+
+
 @repository_router.get("/files", response_model=FilesResponse)
 def get_files():
     """

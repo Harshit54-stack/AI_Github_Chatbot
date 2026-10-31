@@ -28,6 +28,12 @@ class Settings:
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
 
+    # Google OAuth (Phase 11)
+    GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID", "")
+
+    # Application session secret for signing session cookies
+    SESSION_SECRET: str = os.getenv("SESSION_SECRET", "")
+
     # Repository storage — backend/repositories/
     REPOS_DIR: Path = _BASE_DIR / "repositories"
 

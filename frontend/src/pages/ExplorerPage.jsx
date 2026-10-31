@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import FolderTree from "../components/explorer/FolderTree";
@@ -6,7 +6,7 @@ import FileDetailPanel from "../components/explorer/FileDetailPanel";
 import ErrorNotification from "../components/ErrorNotification";
 import { useExplorer } from "../hooks/useExplorer";
 import { getRepositoryTree } from "../services/api";
-import { useState } from "react";
+import { useChat, isValidRepoMeta } from "../context/ChatContext";
 
 // ── Language colour pills ──────────────────────────────────────────────────
 const LANG_PILL_COLORS = {
@@ -26,7 +26,7 @@ const LANG_PILL_COLORS = {
 function StatCard({ label, value, icon, accent = "text-violet-400" }) {
   return (
     <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-4 flex items-center gap-3">
-      <div className={`text-2xl shrink-0`}>{icon}</div>
+      <div className="text-2xl shrink-0">{icon}</div>
       <div>
         <p className={`text-xl font-bold tabular-nums ${accent}`}>
           {value?.toLocaleString() ?? "—"}
@@ -46,8 +46,10 @@ function ParsePanel({ repoMeta, isParsing, parseSummary, parseError, onParse, on
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shrink-0">
-              <span className="text-[10px] text-white font-bold">P3</span>
+            <div className="w-6 h-6 rounded-lg bg-violet-600/80 flex items-center justify-center shrink-0">
+              <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776" />
+              </svg>
             </div>
             <h2 className="text-sm font-semibold text-white">Repository Parser</h2>
             {isParsed && (
@@ -57,7 +59,7 @@ function ParsePanel({ repoMeta, isParsing, parseSummary, parseError, onParse, on
             )}
           </div>
           <p className="text-[11px] text-slate-500">
-            {repoMeta
+            {isValidRepoMeta(repoMeta)
               ? `${repoMeta.owner}/${repoMeta.repository_name} · Tree-sitter AST analysis`
               : "Clone a repository first, then parse it to explore its structure."}
           </p>
@@ -67,7 +69,7 @@ function ParsePanel({ repoMeta, isParsing, parseSummary, parseError, onParse, on
           id="parse-repo-btn"
           onClick={() => onParse(repoMeta?.repository_name || "")}
           disabled={!repoMeta || isParsing}
-          className="shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-sm font-semibold hover:from-violet-500 hover:to-indigo-500 active:scale-95 transition-all shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+          className="shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 text-white text-sm font-semibold hover:bg-violet-500 active:scale-95 transition-all shadow-lg shadow-violet-600/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
         >
           {isParsing ? (
             <>
@@ -129,8 +131,13 @@ export default function ExplorerPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  /** repoMeta is passed via navigation state from HomePage/ChatPage. */
-  const repoMeta = location.state?.repoMeta ?? null;
+  /** repoMeta is retrieved from navigation state, or fallback to ChatContext. */
+  const { repoMeta: contextRepoMeta } = useChat();
+  const repoMeta = isValidRepoMeta(location.state?.repoMeta)
+    ? location.state.repoMeta
+    : isValidRepoMeta(contextRepoMeta)
+    ? contextRepoMeta
+    : null;
 
   const [tree, setTree] = useState([]);
   const [treeError, setTreeError] = useState(null);
@@ -162,7 +169,7 @@ export default function ExplorerPage() {
     <MainLayout>
       <div className="flex flex-col h-screen overflow-hidden">
         {/* ── Top header bar ─────────────────────────────────── */}
-        <header className="flex items-center gap-4 px-5 py-3.5 border-b border-white/10 bg-white/[0.02] backdrop-blur-md shrink-0">
+        <header className="flex items-center gap-4 px-5 py-3.5 border-b border-white/[0.08] bg-white/[0.02] shrink-0">
           <button
             onClick={() => navigate(repoMeta ? "/chat" : "/", { state: { repoMeta } })}
             className="text-slate-400 hover:text-white transition-colors"
@@ -174,7 +181,7 @@ export default function ExplorerPage() {
           </button>
 
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shrink-0 shadow-lg shadow-violet-500/30">
+            <div className="w-7 h-7 rounded-lg bg-violet-600 flex items-center justify-center shrink-0 shadow-md shadow-violet-600/30">
               <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776" />
               </svg>
@@ -212,11 +219,6 @@ export default function ExplorerPage() {
               Chunks
             </button>
           )}
-
-          {/* Phase badge */}
-          <span className="hidden sm:block text-[9px] bg-violet-500/10 border border-violet-500/20 text-violet-400 rounded-full px-2.5 py-1 font-semibold uppercase tracking-widest shrink-0">
-            Phase 3
-          </span>
         </header>
 
         {/* ── Page body ──────────────────────────────────────── */}
@@ -247,8 +249,8 @@ export default function ExplorerPage() {
           {!repoMeta ? (
             /* No repo loaded state */
             <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center px-8 select-none">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500/10 to-indigo-600/10 border border-violet-500/10 flex items-center justify-center">
-                <span className="text-3xl">📂</span>
+              <div className="w-14 h-14 rounded-2xl bg-violet-500/10 border border-violet-500/10 flex items-center justify-center">
+                <span className="text-2xl">📂</span>
               </div>
               <div>
                 <p className="text-slate-300 font-medium">No Repository Loaded</p>

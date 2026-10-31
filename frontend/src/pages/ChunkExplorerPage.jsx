@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import ErrorNotification from "../components/ErrorNotification";
 import { useChunker } from "../hooks/useChunker";
+import { useChat, isValidRepoMeta } from "../context/ChatContext";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -41,15 +42,17 @@ const LANG_COLORS = {
 
 // ── Helper components ────────────────────────────────────────────────────────
 
-function StatCard({ icon, label, value, accent = "text-violet-400" }) {
+function StatCard({ icon, label, value, accent = "text-amber-400" }) {
   return (
-    <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-4 flex items-center gap-3">
-      <span className="text-xl shrink-0">{icon}</span>
+    <div className="bg-[#14151D] border border-white/[0.08] hover:border-white/20 rounded-2xl p-4 flex items-center gap-3.5 shadow-md transition-colors">
+      <div className="icon-disc text-base !w-9 !h-9 text-slate-300">
+        {icon}
+      </div>
       <div>
-        <p className={`text-xl font-bold tabular-nums ${accent}`}>
+        <p className={`text-xl font-bold tabular-nums font-mono ${accent}`}>
           {typeof value === "number" ? value.toLocaleString() : value ?? "—"}
         </p>
-        <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">{label}</p>
+        <p className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-medium">{label}</p>
       </div>
     </div>
   );
@@ -80,22 +83,22 @@ function LangBadge({ language }) {
 function GeneratePanel({ repoMeta, isGenerating, generateSummary, generateError, onGenerate, onDismiss }) {
   const isGenerated = !!generateSummary;
   return (
-    <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-5">
+    <div className="bg-[#14151D] border border-white/[0.08] rounded-2xl p-5 shadow-xl">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shrink-0">
-              <span className="text-[10px] text-white font-bold">P4</span>
+            <div className="icon-disc !w-7 !h-7 text-xs text-amber-400">
+              ⚡
             </div>
-            <h2 className="text-sm font-semibold text-white">Code Chunker</h2>
+            <h2 className="text-sm font-bold text-white">Code Chunker</h2>
             {isGenerated && (
               <span className="text-[9px] bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 rounded-full px-2 py-0.5 font-medium">
                 ✓ Chunked
               </span>
             )}
           </div>
-          <p className="text-[11px] text-slate-500">
-            {repoMeta
+          <p className="text-[11px] text-slate-400">
+            {isValidRepoMeta(repoMeta)
               ? `${repoMeta.owner}/${repoMeta.repository_name} · Semantic chunk generation`
               : "Clone and parse a repository, then generate chunks."}
           </p>
@@ -274,8 +277,6 @@ function ChunkDetail({ chunk, isLoading, error }) {
     );
   }
 
-  const meta = CHUNK_TYPE_META[chunk.chunk_type] || { icon: "📄", color: "" };
-
   return (
     <div className="h-full flex flex-col overflow-hidden">
       {/* Header */}
@@ -372,7 +373,12 @@ function ChunkDetail({ chunk, isLoading, error }) {
 export default function ChunkExplorerPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const repoMeta = location.state?.repoMeta ?? null;
+  const { repoMeta: contextRepoMeta } = useChat();
+  const repoMeta = isValidRepoMeta(location.state?.repoMeta)
+    ? location.state.repoMeta
+    : isValidRepoMeta(contextRepoMeta)
+    ? contextRepoMeta
+    : null;
 
   const {
     generateSummary,
@@ -423,7 +429,7 @@ export default function ChunkExplorerPage() {
       <div className="flex flex-col h-screen overflow-hidden">
 
         {/* ── Header ─────────────────────────────────────────────── */}
-        <header className="flex items-center gap-4 px-5 py-3.5 border-b border-white/10 bg-white/[0.02] backdrop-blur-md shrink-0">
+        <header className="flex items-center gap-4 px-5 py-3.5 border-b border-white/[0.08] bg-white/[0.02] backdrop-blur-md shrink-0">
           <button
             onClick={() => navigate(repoMeta ? "/chat" : "/", { state: { repoMeta } })}
             className="text-slate-400 hover:text-white transition-colors"
@@ -435,7 +441,7 @@ export default function ChunkExplorerPage() {
           </button>
 
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/30">
+            <div className="w-7 h-7 rounded-lg bg-amber-600/80 flex items-center justify-center shrink-0 shadow-md shadow-amber-600/30">
               <span className="text-sm">⚡</span>
             </div>
             <div className="min-w-0">
@@ -471,10 +477,6 @@ export default function ChunkExplorerPage() {
               </button>
             </div>
           )}
-
-          <span className="hidden sm:block text-[9px] bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-full px-2.5 py-1 font-semibold uppercase tracking-widest shrink-0">
-            Phase 4
-          </span>
         </header>
 
         {/* ── Body ───────────────────────────────────────────────── */}
@@ -505,8 +507,8 @@ export default function ChunkExplorerPage() {
           {/* Two-pane explorer */}
           {!repoMeta ? (
             <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center px-8 select-none">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-600/10 border border-amber-500/10 flex items-center justify-center">
-                <span className="text-3xl">⚡</span>
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/10 flex items-center justify-center">
+                <span className="text-2xl">⚡</span>
               </div>
               <div>
                 <p className="text-slate-300 font-medium">No Repository Loaded</p>

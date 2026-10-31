@@ -1,5 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./App.css";
+import { AuthProvider } from "./context/AuthContext";
+import { ChatProvider } from "./context/ChatContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import ChatPage from "./pages/ChatPage";
 import ExplorerPage from "./pages/ExplorerPage";
@@ -7,19 +12,80 @@ import ChunkExplorerPage from "./pages/ChunkExplorerPage";
 import EmbeddingsDashboard from "./pages/EmbeddingsDashboard";
 import VectorDashboard from "./pages/VectorDashboard";
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
+
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/chat" element={<ChatPage />} />
-        <Route path="/explorer" element={<ExplorerPage />} />
-        <Route path="/chunks" element={<ChunkExplorerPage />} />
-        <Route path="/embeddings" element={<EmbeddingsDashboard />} />
-        <Route path="/vector" element={<VectorDashboard />} />
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <AuthProvider>
+        <BrowserRouter>
+          {/*
+            ChatProvider wraps the entire router so that chat state (messages,
+            sessionId, isLoading) lives at the application level and is never
+            destroyed by route changes. State is cleared only when the user
+            clicks "New Chat" or closes/refreshes the browser tab.
+          */}
+          <ChatProvider>
+            <Routes>
+              {/* Public authentication route */}
+              <Route path="/login" element={<LoginPage />} />
+
+              {/* Protected application routes */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <HomePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/chat"
+                element={
+                  <ProtectedRoute>
+                    <ChatPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/explorer"
+                element={
+                  <ProtectedRoute>
+                    <ExplorerPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/chunks"
+                element={
+                  <ProtectedRoute>
+                    <ChunkExplorerPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/embeddings"
+                element={
+                  <ProtectedRoute>
+                    <EmbeddingsDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/vector"
+                element={
+                  <ProtectedRoute>
+                    <VectorDashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Fallback */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </ChatProvider>
+        </BrowserRouter>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }

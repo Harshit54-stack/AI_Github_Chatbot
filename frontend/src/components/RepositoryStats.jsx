@@ -1,37 +1,36 @@
 /**
- * RepositoryStats — displays repository metadata:
- *   • Language badges with colour coding
+ * RepositoryStats — Displays repository telemetry in compact, elevated cards:
+ *   • Language badges
  *   • File / folder / ignored counts
- *   • Owner, branch info
- *
- * @param {{ meta: object }} props   meta is the RepositoryMeta response object
+ *   • Owner & branch indicators
  */
 
-// Language → colour mapping (Tailwind-compatible inline styles via CSS vars)
 const LANG_COLORS = {
-  Python: { bg: "#3572A5", text: "#fff" },
-  JavaScript: { bg: "#F7DF1E", text: "#000" },
-  TypeScript: { bg: "#3178C6", text: "#fff" },
-  "React (JSX)": { bg: "#61DAFB", text: "#000" },
-  "React (TSX)": { bg: "#61DAFB", text: "#000" },
-  Java: { bg: "#B07219", text: "#fff" },
-  "C++": { bg: "#F34B7D", text: "#fff" },
-  C: { bg: "#555555", text: "#fff" },
-  "C#": { bg: "#178600", text: "#fff" },
-  Go: { bg: "#00ADD8", text: "#fff" },
-  Rust: { bg: "#DEA584", text: "#000" },
-  Markdown: { bg: "#083FA1", text: "#fff" },
-  Text: { bg: "#64748b", text: "#fff" },
+  Python: { bg: "rgba(53, 114, 165, 0.2)", border: "rgba(53, 114, 165, 0.4)", text: "#93c5fd" },
+  JavaScript: { bg: "rgba(247, 223, 30, 0.15)", border: "rgba(247, 223, 30, 0.3)", text: "#fde047" },
+  TypeScript: { bg: "rgba(49, 120, 198, 0.2)", border: "rgba(49, 120, 198, 0.4)", text: "#7dd3fc" },
+  "React (JSX)": { bg: "rgba(97, 218, 251, 0.15)", border: "rgba(97, 218, 251, 0.35)", text: "#67e8f9" },
+  "React (TSX)": { bg: "rgba(97, 218, 251, 0.15)", border: "rgba(97, 218, 251, 0.35)", text: "#67e8f9" },
+  Java: { bg: "rgba(176, 114, 25, 0.2)", border: "rgba(176, 114, 25, 0.4)", text: "#fdba74" },
+  "C++": { bg: "rgba(243, 75, 125, 0.2)", border: "rgba(243, 75, 125, 0.4)", text: "#f472b6" },
+  C: { bg: "rgba(100, 116, 139, 0.2)", border: "rgba(100, 116, 139, 0.4)", text: "#cbd5e1" },
+  Go: { bg: "rgba(0, 173, 216, 0.2)", border: "rgba(0, 173, 216, 0.4)", text: "#5eead4" },
+  Rust: { bg: "rgba(222, 165, 132, 0.2)", border: "rgba(222, 165, 132, 0.4)", text: "#fed7aa" },
+  Markdown: { bg: "rgba(8, 63, 161, 0.2)", border: "rgba(8, 63, 161, 0.4)", text: "#93c5fd" },
 };
 
-const DEFAULT_LANG_COLOR = { bg: "#6d28d9", text: "#fff" };
+const DEFAULT_LANG_COLOR = {
+  bg: "rgba(139, 92, 246, 0.15)",
+  border: "rgba(139, 92, 246, 0.3)",
+  text: "#c4b5fd",
+};
 
 function LanguageBadge({ lang }) {
   const color = LANG_COLORS[lang] || DEFAULT_LANG_COLOR;
   return (
     <span
-      style={{ backgroundColor: color.bg, color: color.text }}
-      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold leading-tight whitespace-nowrap"
+      style={{ backgroundColor: color.bg, borderColor: color.border, color: color.text }}
+      className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-mono border leading-tight"
     >
       {lang}
     </span>
@@ -39,10 +38,11 @@ function LanguageBadge({ lang }) {
 }
 
 function StatCard({ value, label }) {
+  const displayValue = typeof value === "number" ? value.toLocaleString() : (value ?? 0);
   return (
-    <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
-      <p className="text-base font-bold text-white tabular-nums">{value}</p>
-      <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">{label}</p>
+    <div className="bg-[#14151D] border border-white/[0.08] rounded-xl p-2.5 text-center shadow-inner hover:border-white/20 transition-colors">
+      <p className="text-sm font-bold text-white tabular-nums">{displayValue}</p>
+      <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">{label}</p>
     </div>
   );
 }
@@ -51,20 +51,8 @@ export default function RepositoryStats({ meta }) {
   if (!meta) return null;
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Owner / Branch row */}
-      <div className="grid grid-cols-2 gap-2">
-        <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-2">
-          <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-0.5">Owner</p>
-          <p className="text-xs text-violet-300 font-mono truncate">{meta.owner}</p>
-        </div>
-        <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-2">
-          <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-0.5">Branch</p>
-          <p className="text-xs text-emerald-300 font-mono truncate">{meta.branch || "HEAD"}</p>
-        </div>
-      </div>
-
-      {/* Stats grid */}
+    <div className="flex flex-col gap-3">
+      {/* 2x2 Telemetry Grid */}
       <div className="grid grid-cols-2 gap-2">
         <StatCard value={meta.total_files} label="Total Files" />
         <StatCard value={meta.supported_files} label="Supported" />
@@ -72,13 +60,13 @@ export default function RepositoryStats({ meta }) {
         <StatCard value={meta.ignored_files} label="Ignored" />
       </div>
 
-      {/* Language badges */}
+      {/* Languages Pills */}
       {meta.languages && meta.languages.length > 0 && (
-        <div>
-          <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-2 font-medium">
-            Languages
+        <div className="pt-1">
+          <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-1.5 font-medium px-1">
+            Stack
           </p>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1">
             {meta.languages.map((lang) => (
               <LanguageBadge key={lang} lang={lang} />
             ))}

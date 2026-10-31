@@ -6,6 +6,7 @@ const apiClient = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
   timeout: 60000, // 60 s — enough for parse & chunk
+  withCredentials: true,
 });
 
 /** Dedicated client with longer timeout for clone requests (large repos). */
@@ -13,6 +14,7 @@ const cloneClient = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
   timeout: 180000, // 3 minutes
+  withCredentials: true,
 });
 
 /** Dedicated client for embedding & FAISS — can take 1-2 min on large repos. */
@@ -20,6 +22,7 @@ const longRunningClient = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
   timeout: 600000, // 10 minutes
+  withCredentials: true,
 });
 
 /**
@@ -81,6 +84,23 @@ export const getRepositoryTree = async () => {
 export const deleteRepository = async () => {
   const { data } = await apiClient.delete("/repository");
   return data;
+};
+
+/**
+ * Fetch metadata of the currently active repository clone.
+ * Returns null if no repository has been cloned yet (404).
+ * @returns {Promise<object | null>}
+ */
+export const getActiveRepository = async () => {
+  try {
+    const { data } = await apiClient.get("/repository/active");
+    return data;
+  } catch (err) {
+    if (err?.response?.status === 404) {
+      return null;
+    }
+    throw err;
+  }
 };
 
 // ---------------------------------------------------------------------------
@@ -285,6 +305,7 @@ const chatClient = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
   timeout: 120000, // 2 minutes for long AI responses
+  withCredentials: true,
 });
 
 /**
@@ -314,6 +335,7 @@ export const streamRAGMessage = async (body, onEvent, onDone, onError) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(120000),
+      credentials: "include",
     });
 
     if (!response.ok) {

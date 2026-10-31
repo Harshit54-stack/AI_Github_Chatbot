@@ -24,3 +24,8 @@ faiss-cpu>=1.7.4
 sse-starlette>=1.6.1,<2.0.0
 # Phase 9 — Hybrid BM25+FAISS retrieval
 rank-bm25==0.2.2
+
+# Phase 11 — Google OAuth & User Auth
+google-auth>=2.38.0
+sqlalchemy>=2.0.0
+itsdangerous>=2.2.0

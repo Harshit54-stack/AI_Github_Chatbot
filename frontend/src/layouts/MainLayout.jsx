@@ -1,14 +1,18 @@
 /**
- * MainLayout — full-viewport dark wrapper used by all pages.
+ * MainLayout — Full-viewport dark application canvas (#08090D)
+ * with subtle ambient depth for premium AI SaaS aesthetic.
  */
 export default function MainLayout({ children }) {
   return (
-    <div className="min-h-screen bg-[#0a0a12] text-slate-100 antialiased">
-      {/* Ambient gradient blobs */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10">
-        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-violet-700/20 blur-[120px]" />
-        <div className="absolute -bottom-40 -right-20 w-[500px] h-[500px] rounded-full bg-indigo-700/20 blur-[100px]" />
-      </div>
+    <div className="min-h-screen bg-[#08090D] text-[#F5F5FA] antialiased selection:bg-violet-600/30 selection:text-white relative overflow-hidden">
+      {/* Subtle background tech grid */}
+      <div
+        className="pointer-events-none fixed inset-0 opacity-[0.025] -z-10"
+        style={{
+          backgroundImage: `radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px)`,
+          backgroundSize: "28px 28px",
+        }}
+      />
       {children}
     </div>
   );

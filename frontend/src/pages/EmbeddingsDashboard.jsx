@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import ErrorNotification from "../components/ErrorNotification";
 import { useEmbedder } from "../hooks/useEmbedder";
+import { useChat, isValidRepoMeta } from "../context/ChatContext";
 
 // ── Chunk-type colour map (consistent with ChunkExplorerPage) ────────────────
 const CHUNK_TYPE_META = {
@@ -31,16 +32,16 @@ const LANG_COLORS = {
 
 function StatCard({ icon, label, value, accent = "text-indigo-400", sub }) {
   return (
-    <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-4 flex items-start gap-3">
-      <div className="w-9 h-9 rounded-xl bg-white/[0.06] flex items-center justify-center shrink-0 text-lg">
+    <div className="bg-[#14151D] border border-white/[0.08] hover:border-white/20 rounded-2xl p-4 flex items-start gap-3.5 shadow-md transition-colors">
+      <div className="icon-disc !w-9 !h-9 text-base text-slate-300">
         {icon}
       </div>
       <div className="min-w-0">
-        <p className={`text-xl font-bold tabular-nums truncate ${accent}`}>
+        <p className={`text-xl font-bold tabular-nums font-mono truncate ${accent}`}>
           {value ?? "—"}
         </p>
-        <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">{label}</p>
-        {sub && <p className="text-[10px] text-slate-600 mt-0.5">{sub}</p>}
+        <p className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5 font-medium">{label}</p>
+        {sub && <p className="text-[10px] text-slate-500 mt-0.5 font-mono">{sub}</p>}
       </div>
     </div>
   );
@@ -110,10 +111,10 @@ function ProgressBar({ progress, isGenerating }) {
 
 function ModelCard({ statistics }) {
   return (
-    <div className="bg-gradient-to-br from-indigo-500/10 to-violet-500/10 border border-indigo-500/20 rounded-2xl p-5">
+    <div className="glow-card glow-card-blue p-5">
       <div className="flex items-start gap-4">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 shrink-0">
-          <span className="text-2xl">🧠</span>
+        <div className="icon-disc !w-12 !h-12 text-2xl text-indigo-400">
+          🧠
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -263,12 +264,16 @@ function DistributionCard({ title, data }) {
 export default function EmbeddingsDashboard() {
   const location = useLocation();
   const navigate = useNavigate();
-  const repoMeta = location.state?.repoMeta ?? null;
+  const { repoMeta: contextRepoMeta } = useChat();
+  const repoMeta = isValidRepoMeta(location.state?.repoMeta)
+    ? location.state.repoMeta
+    : isValidRepoMeta(contextRepoMeta)
+    ? contextRepoMeta
+    : null;
 
   const {
     statistics,
     embeddings,
-    totalEmbeddings,
     progress,
     result,
     isGenerating,
@@ -290,7 +295,7 @@ export default function EmbeddingsDashboard() {
       <div className="flex flex-col h-screen overflow-hidden">
 
         {/* ── Header ──────────────────────────────────────────────── */}
-        <header className="flex items-center gap-4 px-5 py-3.5 border-b border-white/10 bg-white/[0.02] backdrop-blur-md shrink-0">
+        <header className="flex items-center gap-4 px-5 py-3.5 border-b border-white/[0.08] bg-white/[0.02] backdrop-blur-md shrink-0">
           <button
             onClick={() => navigate(repoMeta ? "/chunks" : "/", { state: { repoMeta } })}
             className="text-slate-400 hover:text-white transition-colors"
@@ -302,7 +307,7 @@ export default function EmbeddingsDashboard() {
           </button>
 
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/30 text-sm">
+            <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0 shadow-md shadow-indigo-600/30 text-sm">
               🧠
             </div>
             <div className="min-w-0">
@@ -332,18 +337,14 @@ export default function EmbeddingsDashboard() {
               ))}
             </div>
           )}
-
-          <span className="hidden sm:block text-[9px] bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-full px-2.5 py-1 font-semibold uppercase tracking-widest shrink-0">
-            Phase 5
-          </span>
         </header>
 
         {/* ── Body ────────────────────────────────────────────────── */}
         {!repoMeta ? (
           /* No repo state */
           <div className="flex-1 flex flex-col items-center justify-center gap-4 px-8 text-center select-none">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-violet-600/10 border border-indigo-500/10 flex items-center justify-center">
-              <span className="text-3xl">🧠</span>
+            <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/10 flex items-center justify-center">
+              <span className="text-2xl">🧠</span>
             </div>
             <div>
               <p className="text-slate-300 font-medium">No Repository Loaded</p>
@@ -369,21 +370,21 @@ export default function EmbeddingsDashboard() {
               )}
 
               {/* ── Control panel ────────────────────── */}
-              <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-5">
+              <div className="bg-[#14151D] border border-white/[0.08] rounded-2xl p-5 shadow-xl">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0">
-                        <span className="text-[10px] text-white font-bold">P5</span>
+                      <div className="icon-disc !w-7 !h-7 text-xs text-indigo-400">
+                        🧠
                       </div>
-                      <h2 className="text-sm font-semibold text-white">Embedding Generator</h2>
+                      <h2 className="text-sm font-bold text-white">Embedding Generator</h2>
                       {isComplete && (
                         <span className="text-[9px] bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 rounded-full px-2 py-0.5 font-medium">
                           ✓ Generated
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-slate-500">
+                    <p className="text-[11px] text-slate-400">
                       {repoMeta.owner}/{repoMeta.repository_name} · BAAI/bge-base-en-v1.5
                     </p>
                   </div>
@@ -402,7 +403,7 @@ export default function EmbeddingsDashboard() {
                       id="generate-embeddings-btn"
                       onClick={() => triggerGenerate(repoName)}
                       disabled={isGenerating}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-semibold hover:from-indigo-500 hover:to-violet-500 active:scale-95 transition-all shadow-lg shadow-indigo-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 text-white text-sm font-semibold hover:bg-violet-500 active:scale-95 transition-all shadow-lg shadow-violet-600/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
                     >
                       {isGenerating ? (
                         <>
@@ -522,8 +523,8 @@ export default function EmbeddingsDashboard() {
               {/* Empty state when not yet generated */}
               {!statistics && !isGenerating && (
                 <div className="flex flex-col items-center justify-center py-16 gap-4 text-center select-none">
-                  <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-indigo-500/10 to-violet-600/10 border border-indigo-500/10 flex items-center justify-center">
-                    <span className="text-4xl">🧠</span>
+                  <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/10 flex items-center justify-center">
+                    <span className="text-3xl">🧠</span>
                   </div>
                   <div>
                     <p className="text-slate-300 font-semibold">No Embeddings Yet</p>
@@ -533,7 +534,7 @@ export default function EmbeddingsDashboard() {
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center mt-2">
-                    {["✓ Clone repo", "✓ Parse (P3)", "✓ Chunk (P4)", "→ Embed (P5)"].map((step) => (
+                    {["✓ Clone repo", "✓ Parse", "✓ Chunk", "→ Embed"].map((step) => (
                       <span key={step} className="text-[11px] border border-white/10 rounded-full px-3 py-1 text-slate-500">
                         {step}
                       </span>

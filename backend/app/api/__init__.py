@@ -5,5 +5,15 @@ from .chunk import chunk_router
 from .embeddings import embeddings_router
 from .vector import vector_router
 from .chat import chat_router
+from .auth import auth_router
 
-__all__ = ["router", "repository_router", "parser_router", "chunk_router", "embeddings_router", "vector_router", "chat_router"]
+__all__ = [
+    "router",
+    "repository_router",
+    "parser_router",
+    "chunk_router",
+    "embeddings_router",
+    "vector_router",
+    "chat_router",
+    "auth_router",
+]

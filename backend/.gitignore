@@ -21,8 +21,10 @@ env/
 .idea/
 *.swp
 
-# Secrets
+# Secrets & Databases
 .env
+*.db
+auth.db
 
 # Logs
 *.log
