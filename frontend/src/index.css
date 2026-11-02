@@ -3,15 +3,16 @@
 /* ── Design Tokens & CSS Variables ─────────────────────────── */
 :root {
   --bg-main: #090A0F;
-  --bg-header: #0C0D13;
+  --bg-header: rgba(12, 13, 19, 0.85);
   --bg-sidebar: #0D0E14;
-  --bg-surface: #13141C;
-  --bg-surface-elevated: #171821;
-  --border-subtle: rgba(255, 255, 255, 0.09);
+  --bg-surface: #12131C;
+  --bg-surface-elevated: #181924;
+  --border-subtle: rgba(255, 255, 255, 0.08);
   --border-hover: rgba(255, 255, 255, 0.16);
+  --border-accent: rgba(124, 58, 237, 0.4);
   --text-primary: #F5F5F7;
-  --text-secondary: #A1A1B2;
-  --text-muted: #77798D;
+  --text-secondary: #9DA1B4;
+  --text-muted: #6F7285;
   --accent-violet: #7C3AED;
   --accent-violet-hover: #6D28D9;
   --accent-cyan: #06B6D4;
@@ -29,11 +30,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(124, 58, 237, 0.2);
+  background: rgba(124, 58, 237, 0.25);
   border-radius: 99px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(124, 58, 237, 0.45);
+  background: rgba(124, 58, 237, 0.5);
 }
 
 /* ── Smooth scroll for all scrollable areas ─────────────────── */
@@ -48,13 +49,13 @@ body {
   padding: 0;
   background-color: var(--bg-main);
   color: var(--text-primary);
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   LANDING PAGE — Refined Design System
+   LANDING PAGE — Premium Modern AI SaaS Design System
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Header ──────────────────────────────────────────────────── */
@@ -65,35 +66,40 @@ body {
   padding: 0.875rem 1.5rem;
   border-bottom: 1px solid var(--border-subtle);
   background: var(--bg-header);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   position: sticky;
   top: 0;
-  z-index: 30;
+  z-index: 40;
 }
 
 @media (min-width: 640px) {
   .landing-header {
-    padding: 0.875rem 2rem;
+    padding: 0.875rem 2.5rem;
   }
 }
 
-/* ── Auth buttons ────────────────────────────────────────────── */
+/* ── Auth Buttons ────────────────────────────────────────────── */
 .landing-btn-ghost {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.95rem;
+  border-radius: 0.55rem;
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-secondary);
   background: transparent;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
   line-height: 1.25rem;
 }
 .landing-btn-ghost:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 .landing-btn-ghost:focus-visible {
   outline: 2px solid var(--accent-violet);
@@ -101,153 +107,221 @@ body {
 }
 
 .landing-btn-primary {
-  padding: 0.5rem 1.125rem;
-  border-radius: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 1.125rem;
+  border-radius: 0.55rem;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: white;
-  background: var(--accent-violet);
-  border: 1px solid transparent;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #7C3AED 0%, #6366F1 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 16px rgba(124, 58, 237, 0.25);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
   line-height: 1.25rem;
 }
 .landing-btn-primary:hover {
-  background: var(--accent-violet-hover);
+  background: linear-gradient(135deg, #6D28D9 0%, #4F46E5 100%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 24px rgba(124, 58, 237, 0.4);
+  transform: translateY(-1px);
+}
+.landing-btn-primary:active {
+  transform: translateY(0);
 }
 .landing-btn-primary:focus-visible {
   outline: 2px solid var(--accent-violet);
   outline-offset: 2px;
 }
 
-/* ── Main content area ───────────────────────────────────────── */
+/* ── Main Content Container ──────────────────────────────────── */
 .landing-main {
-  max-width: 64rem;
+  max-width: 68rem;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
 
 @media (min-width: 640px) {
   .landing-main {
-    padding: 0 2rem;
+    padding: 0 2.5rem;
   }
 }
 
 /* ── Hero Section ────────────────────────────────────────────── */
 .landing-hero {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding-top: 4rem;
-  padding-bottom: 1rem;
+  padding-top: 3.5rem;
+  padding-bottom: 2rem;
 }
 
 @media (min-width: 640px) {
   .landing-hero {
-    padding-top: 5rem;
+    padding-top: 4.5rem;
+    padding-bottom: 2.5rem;
   }
 }
 
 @media (min-width: 1024px) {
   .landing-hero {
-    padding-top: 6rem;
+    padding-top: 5.5rem;
   }
+}
+
+/* Hero Background Glow */
+.landing-hero-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 55rem;
+  height: 28rem;
+  background: radial-gradient(ellipse 65% 55% at 50% 20%, rgba(124, 58, 237, 0.14) 0%, rgba(99, 102, 241, 0.07) 45%, transparent 75%);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(20px);
+}
+
+/* ── Hero Badge ──────────────────────────────────────────────── */
+.landing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  color: #C4B5FD;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.12);
+  backdrop-filter: blur(8px);
 }
 
 /* ── Hero Heading ────────────────────────────────────────────── */
 .landing-heading {
-  font-size: 2.5rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
   color: var(--text-primary);
-  line-height: 1.15;
-  margin: 0 0 2rem;
+  line-height: 1.12;
+  margin: 0 0 1rem;
 }
 
 @media (min-width: 640px) {
   .landing-heading {
-    font-size: 3.25rem;
+    font-size: 3.75rem;
   }
 }
 
 @media (min-width: 1024px) {
   .landing-heading {
-    font-size: 4rem;
+    font-size: 4.5rem;
   }
 }
 
-/* ── Input container ─────────────────────────────────────────── */
+.landing-heading-accent {
+  background: linear-gradient(135deg, #A78BFA 0%, #818CF8 50%, #C084FC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Hero Subtitle ───────────────────────────────────────────── */
+.landing-subtitle {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 38rem;
+  margin: 0 auto 2.25rem;
+  font-weight: 400;
+}
+
+@media (min-width: 640px) {
+  .landing-subtitle {
+    font-size: 1.125rem;
+    line-height: 1.65;
+  }
+}
+
+/* ── Repository URL Input Container ──────────────────────────── */
 .landing-input-container {
   width: 100%;
-  max-width: 40rem;
+  max-width: 44rem;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 1rem;
-  padding: 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 1.125rem;
+  padding: 0.625rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
 }
 
 .landing-input-container:focus-within {
-  border-color: rgba(124, 58, 237, 0.4);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+  border-color: rgba(124, 58, 237, 0.55);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12), 0 8px 30px rgba(124, 58, 237, 0.16);
 }
 
-/* ── Text input ──────────────────────────────────────────────── */
+/* ── Text Input ──────────────────────────────────────────────── */
 .landing-input {
   width: 100%;
-  background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-subtle);
-  border-radius: 0.625rem;
-  padding: 0.75rem 0.75rem 0.75rem 2.75rem;
-  font-size: 0.875rem;
+  background: transparent;
+  border: none;
+  padding: 0.75rem 0.75rem 0.75rem 2.85rem;
+  font-size: 0.9375rem;
   color: var(--text-primary);
   outline: none;
-  transition: border-color 0.15s ease;
 }
 
 .landing-input::placeholder {
   color: var(--text-muted);
 }
 
-.landing-input:focus {
-  border-color: rgba(124, 58, 237, 0.5);
-}
-
 .landing-input:disabled {
   opacity: 0.5;
+  cursor: not-allowed;
 }
 
-/* ── Analyze button ──────────────────────────────────────────── */
+/* ── Analyze Button ──────────────────────────────────────────── */
 .landing-btn-analyze {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.625rem;
-  background: var(--accent-violet);
-  color: white;
+  padding: 0.75rem 1.6rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #7C3AED 0%, #6366F1 100%);
+  color: #FFFFFF;
   font-size: 0.875rem;
   font-weight: 600;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 20px rgba(124, 58, 237, 0.3);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
 }
 
 .landing-btn-analyze:hover:not(:disabled) {
-  background: var(--accent-violet-hover);
+  background: linear-gradient(135deg, #6D28D9 0%, #4F46E5 100%);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 28px rgba(124, 58, 237, 0.45);
+  transform: translateY(-1px);
 }
 
 .landing-btn-analyze:active:not(:disabled) {
-  transform: scale(0.97);
+  transform: translateY(0);
 }
 
 .landing-btn-analyze:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .landing-btn-analyze:focus-visible {
@@ -255,91 +329,145 @@ body {
   outline-offset: 2px;
 }
 
-/* ── Section spacing ─────────────────────────────────────────── */
+/* ── Section Spacing ─────────────────────────────────────────── */
 .landing-section {
   padding: 3rem 0;
 }
 
-/* ── Quick-start card ────────────────────────────────────────── */
+@media (min-width: 640px) {
+  .landing-section {
+    padding: 3.75rem 0;
+  }
+}
+
+/* ── Quick-Start Card ────────────────────────────────────────── */
 .landing-quickstart-card {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 0.875rem;
-  padding: 1rem 1.125rem;
+  padding: 1.25rem 1.35rem;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: left;
   width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-quickstart-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .landing-quickstart-card:hover {
-  border-color: var(--border-hover);
+  border-color: rgba(124, 58, 237, 0.35);
   background: var(--bg-surface-elevated);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 20px rgba(124, 58, 237, 0.12);
 }
 
-/* ── Feature card ────────────────────────────────────────────── */
+.landing-quickstart-card:hover::before {
+  opacity: 1;
+}
+
+/* ── Feature Card ────────────────────────────────────────────── */
 .landing-feature-card {
   display: flex;
-  align-items: flex-start;
-  gap: 0.875rem;
-  padding: 1.25rem;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.4rem;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-feature-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 0%, rgba(124, 58, 237, 0.08) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .landing-feature-card:hover {
-  border-color: var(--border-hover);
-  transform: translateY(-1px);
+  border-color: rgba(124, 58, 237, 0.3);
+  background: var(--bg-surface-elevated);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.38), 0 0 22px rgba(124, 58, 237, 0.1);
 }
 
-/* ── Icon disc ───────────────────────────────────────────────── */
+.landing-feature-card:hover::before {
+  opacity: 1;
+}
+
+/* ── Icon Disc ───────────────────────────────────────────────── */
 .landing-icon-disc {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.5rem;
-  background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-subtle);
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.65rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
-/* ── Active repo snapshot ────────────────────────────────────── */
+.landing-quickstart-card:hover .landing-icon-disc,
+.landing-feature-card:hover .landing-icon-disc {
+  background: rgba(124, 58, 237, 0.15);
+  border-color: rgba(124, 58, 237, 0.35);
+  color: #C4B5FD;
+  box-shadow: 0 0 14px rgba(124, 58, 237, 0.25);
+}
+
+/* ── Active Repository Snapshot ──────────────────────────────── */
 .landing-active-repo {
   background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  margin-top: 1.5rem;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 1rem;
+  padding: 1.35rem 1.5rem;
+  margin-top: 1.75rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 25px rgba(16, 185, 129, 0.06);
 }
 
 /* ── Footer ──────────────────────────────────────────────────── */
 .landing-footer {
-  max-width: 64rem;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
   border-top: 1px solid var(--border-subtle);
+  background: rgba(10, 11, 16, 0.6);
+  padding: 2.5rem 1.5rem;
+  margin-top: 4rem;
 }
 
 @media (min-width: 640px) {
   .landing-footer {
-    padding: 2rem;
+    padding: 3rem 2.5rem;
   }
 }
 
+.landing-footer-inner {
+  max-width: 68rem;
+  margin: 0 auto;
+}
 
 /* ═══════════════════════════════════════════════════════════════
-   EXISTING CARD UTILITIES (preserved for other pages)
+   PRESERVED GLOW CARDS & UTILITIES (for other pages)
    ═══════════════════════════════════════════════════════════════ */
-
-/* ── Glowing Card Utilities (Inspired by Reference Images) ─── */
 .glow-card {
   position: relative;
   background: #14151D;
@@ -368,7 +496,6 @@ body {
   opacity: 1;
 }
 
-/* Violet glow card */
 .glow-card-violet::before {
   background: radial-gradient(
     80% 55% at 50% 115%,
@@ -379,7 +506,6 @@ body {
   box-shadow: inset 0 -1px 0 0 rgba(139, 92, 246, 0.6);
 }
 
-/* Cyan glow card */
 .glow-card-cyan::before {
   background: radial-gradient(
     80% 55% at 50% 115%,
@@ -390,7 +516,6 @@ body {
   box-shadow: inset 0 -1px 0 0 rgba(6, 182, 212, 0.6);
 }
 
-/* Emerald glow card */
 .glow-card-emerald::before {
   background: radial-gradient(
     80% 55% at 50% 115%,
@@ -401,7 +526,6 @@ body {
   box-shadow: inset 0 -1px 0 0 rgba(16, 185, 129, 0.6);
 }
 
-/* Amber glow card */
 .glow-card-amber::before {
   background: radial-gradient(
     80% 55% at 50% 115%,
@@ -412,7 +536,6 @@ body {
   box-shadow: inset 0 -1px 0 0 rgba(245, 158, 11, 0.6);
 }
 
-/* Blue glow card */
 .glow-card-blue::before {
   background: radial-gradient(
     80% 55% at 50% 115%,
@@ -423,7 +546,6 @@ body {
   box-shadow: inset 0 -1px 0 0 rgba(59, 130, 246, 0.6);
 }
 
-/* Icon disc like in reference images */
 .icon-disc {
   width: 2.5rem;
   height: 2.5rem;
