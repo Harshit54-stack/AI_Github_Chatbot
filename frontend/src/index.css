@@ -2,16 +2,18 @@
 
 /* ── Design Tokens & CSS Variables ─────────────────────────── */
 :root {
-  --bg-main: #08090D;
+  --bg-main: #090A0F;
+  --bg-header: #0C0D13;
   --bg-sidebar: #0D0E14;
-  --bg-surface: #14151D;
-  --bg-surface-elevated: #191A23;
-  --border-subtle: rgba(255, 255, 255, 0.08);
+  --bg-surface: #13141C;
+  --bg-surface-elevated: #171821;
+  --border-subtle: rgba(255, 255, 255, 0.09);
   --border-hover: rgba(255, 255, 255, 0.16);
-  --text-primary: #F5F5FA;
-  --text-secondary: #A1A1B5;
-  --text-muted: #74758B;
-  --accent-violet: #8B5CF6;
+  --text-primary: #F5F5F7;
+  --text-secondary: #A1A1B2;
+  --text-muted: #77798D;
+  --accent-violet: #7C3AED;
+  --accent-violet-hover: #6D28D9;
   --accent-cyan: #06B6D4;
   --accent-blue: #3B82F6;
   --accent-emerald: #10B981;
@@ -27,11 +29,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.2);
+  background: rgba(124, 58, 237, 0.2);
   border-radius: 99px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(139, 92, 246, 0.45);
+  background: rgba(124, 58, 237, 0.45);
 }
 
 /* ── Smooth scroll for all scrollable areas ─────────────────── */
@@ -50,6 +52,292 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   LANDING PAGE — Refined Design System
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Header ──────────────────────────────────────────────────── */
+.landing-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-header);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+@media (min-width: 640px) {
+  .landing-header {
+    padding: 0.875rem 2rem;
+  }
+}
+
+/* ── Auth buttons ────────────────────────────────────────────── */
+.landing-btn-ghost {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  line-height: 1.25rem;
+}
+.landing-btn-ghost:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+.landing-btn-ghost:focus-visible {
+  outline: 2px solid var(--accent-violet);
+  outline-offset: 2px;
+}
+
+.landing-btn-primary {
+  padding: 0.5rem 1.125rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: white;
+  background: var(--accent-violet);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  line-height: 1.25rem;
+}
+.landing-btn-primary:hover {
+  background: var(--accent-violet-hover);
+}
+.landing-btn-primary:focus-visible {
+  outline: 2px solid var(--accent-violet);
+  outline-offset: 2px;
+}
+
+/* ── Main content area ───────────────────────────────────────── */
+.landing-main {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .landing-main {
+    padding: 0 2rem;
+  }
+}
+
+/* ── Hero Section ────────────────────────────────────────────── */
+.landing-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 4rem;
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .landing-hero {
+    padding-top: 5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .landing-hero {
+    padding-top: 6rem;
+  }
+}
+
+/* ── Hero Heading ────────────────────────────────────────────── */
+.landing-heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  line-height: 1.15;
+  margin: 0 0 2rem;
+}
+
+@media (min-width: 640px) {
+  .landing-heading {
+    font-size: 3.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .landing-heading {
+    font-size: 4rem;
+  }
+}
+
+/* ── Input container ─────────────────────────────────────────── */
+.landing-input-container {
+  width: 100%;
+  max-width: 40rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  padding: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.landing-input-container:focus-within {
+  border-color: rgba(124, 58, 237, 0.4);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+}
+
+/* ── Text input ──────────────────────────────────────────────── */
+.landing-input {
+  width: 100%;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.625rem;
+  padding: 0.75rem 0.75rem 0.75rem 2.75rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.landing-input::placeholder {
+  color: var(--text-muted);
+}
+
+.landing-input:focus {
+  border-color: rgba(124, 58, 237, 0.5);
+}
+
+.landing-input:disabled {
+  opacity: 0.5;
+}
+
+/* ── Analyze button ──────────────────────────────────────────── */
+.landing-btn-analyze {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.625rem;
+  background: var(--accent-violet);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.landing-btn-analyze:hover:not(:disabled) {
+  background: var(--accent-violet-hover);
+}
+
+.landing-btn-analyze:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.landing-btn-analyze:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.landing-btn-analyze:focus-visible {
+  outline: 2px solid var(--accent-violet);
+  outline-offset: 2px;
+}
+
+/* ── Section spacing ─────────────────────────────────────────── */
+.landing-section {
+  padding: 3rem 0;
+}
+
+/* ── Quick-start card ────────────────────────────────────────── */
+.landing-quickstart-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 1rem 1.125rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.landing-quickstart-card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-surface-elevated);
+}
+
+/* ── Feature card ────────────────────────────────────────────── */
+.landing-feature-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 1.25rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.landing-feature-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+}
+
+/* ── Icon disc ───────────────────────────────────────────────── */
+.landing-icon-disc {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Active repo snapshot ────────────────────────────────────── */
+.landing-active-repo {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.landing-footer {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+@media (min-width: 640px) {
+  .landing-footer {
+    padding: 2rem;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   EXISTING CARD UTILITIES (preserved for other pages)
+   ═══════════════════════════════════════════════════════════════ */
 
 /* ── Glowing Card Utilities (Inspired by Reference Images) ─── */
 .glow-card {
@@ -148,4 +436,3 @@ body {
   justify-content: center;
   flex-shrink: 0;
 }
-

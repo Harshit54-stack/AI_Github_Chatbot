@@ -30,15 +30,10 @@ export default function App() {
               {/* Public authentication route */}
               <Route path="/login" element={<LoginPage />} />
 
+              {/* Public landing page — shows login/signup for unauthenticated users */}
+              <Route path="/" element={<HomePage />} />
+
               {/* Protected application routes */}
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <HomePage />
-                  </ProtectedRoute>
-                }
-              />
               <Route
                 path="/chat"
                 element={
